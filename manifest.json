@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Recipe Summarizer",
+  "version": "0.1.0",
+  "description": "Summarizes the recipe on the page you're viewing into a clean ingredients + steps card — reads only the structured data already in the page.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "recipesummarizer@rs.local",
+      "strict_min_version": "121.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "permissions": ["storage", "clipboardWrite"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://cooking.nytimes.com/recipes/*"],
+      "js": [
+        "src/common/duration.js",
+        "src/common/parser.js",
+        "src/common/render.js",
+        "src/content/content.js"
+      ],
+      "css": ["src/common/styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

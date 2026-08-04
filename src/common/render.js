@@ -149,6 +149,11 @@
     const panel = el("div", "rs-panel");
 
     const header = el("div", "rs-header");
+    // isFree comes straight from the page's own JSON-LD (`isAccessibleForFree`,
+    // a standard schema.org Recipe property) — see parser.js normalizeRecipe().
+    // This is NYT's own self-published metadata, not a determination this
+    // extension makes; both recipes captured during research had it set
+    // explicitly (`false`) right alongside the full ingredients/steps.
     if (recipe.isFree === false) header.append(el("span", "rs-badge", "🔒 Paywalled page — public recipe data"));
     else if (recipe.isFree === true) header.append(el("span", "rs-badge", "🔓 Free"));
     header.append(el("span", "rs-title", recipe.title));

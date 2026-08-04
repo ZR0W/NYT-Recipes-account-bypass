@@ -32,6 +32,7 @@ Connect the device over USB, use desktop Firefox's `about:debugging` to reach th
 ## Using it
 
 - The card appears automatically on recipe pages; click the header to collapse/expand it (your preference is remembered).
+- The 🔒/🔓 badge next to the title isn't a guess — it's NYT's own `isAccessibleForFree` flag, published as part of the same structured recipe data as the ingredients and steps. The extension just displays whatever value NYT put there; it doesn't infer or check paywall state itself.
 - **Copy as Markdown** puts a clean ingredients + numbered-steps writeup on your clipboard.
 - **Print** opens your browser's print dialog with just the card visible — use "Save as PDF" there if you want a file.
 

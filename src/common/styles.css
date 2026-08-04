@@ -160,11 +160,13 @@
 }
 
 .rs-steps {
+  list-style: decimal outside !important;
   margin: 0 0 0 18px !important;
   padding: 0 !important;
 }
 
 .rs-steps li {
+  display: list-item !important;
   margin-bottom: 5px !important;
   color: #202124 !important;
 }
@@ -176,12 +178,54 @@
   margin-bottom: 6px !important;
 }
 
-.rs-ingredient-check {
+/* Sized wrapper so the invisible native input and the visible custom box
+   can stack exactly on top of each other. */
+.rs-checkbox-wrap {
+  position: relative !important;
   flex: 0 0 auto !important;
-  width: 15px !important;
-  height: 15px !important;
-  margin: 2px 0 0 !important;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-top: 2px !important;
+}
+
+/* Real checkbox: kept interactive/focusable/accessible, but invisible —
+   host-page CSS resets on native form controls (common on news sites with
+   their own custom toggle styling) must not be able to hide this, since
+   we want it hidden anyway; what must stay visible is .rs-checkbox-box. */
+.rs-ingredient-check {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  opacity: 0 !important;
   cursor: pointer !important;
+}
+
+.rs-checkbox-box {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  border: 1.5px solid #9aa0a6 !important;
+  border-radius: 3px !important;
+  background: #ffffff !important;
+  pointer-events: none !important;
+}
+
+.rs-ingredient.rs-checked .rs-checkbox-box {
+  background: #1a73e8 !important;
+  border-color: #1a73e8 !important;
+}
+
+.rs-ingredient.rs-checked .rs-checkbox-box::after {
+  content: "✓" !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
 }
 
 .rs-ingredient-label {

@@ -63,6 +63,13 @@
   // card is usable hands-on while actually cooking. Checked state is UI-only
   // (not persisted) — ticking things off while cooking is a one-session
   // activity, unlike the card's own collapsed/expanded state.
+  //
+  // The visible box is a plain <span> we style entirely ourselves, not the
+  // native checkbox appearance — host pages (NYT Cooking included) commonly
+  // reset native form-control styling globally, which made the real
+  // <input type="checkbox"> render blank/invisible. The real input stays in
+  // the DOM (visually hidden, not display:none) purely for accessibility —
+  // it's what's actually keyboard-focusable and gets the "change" event.
   function buildIngredients(recipe) {
     const section = el("div", "rs-section");
     section.append(el("h3", null, "Ingredients"));
@@ -71,6 +78,7 @@
       const item = el("li", "rs-ingredient");
       const checkboxId = `rs-ingredient-${i}`;
 
+      const wrap = el("span", "rs-checkbox-wrap");
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "rs-ingredient-check";
@@ -78,13 +86,15 @@
       checkbox.addEventListener("change", () => {
         item.classList.toggle("rs-checked", checkbox.checked);
       });
+      const box = el("span", "rs-checkbox-box");
+      wrap.append(checkbox, box);
 
       const label = document.createElement("label");
       label.className = "rs-ingredient-label";
       label.setAttribute("for", checkboxId);
       label.textContent = ingredient;
 
-      item.append(checkbox, label);
+      item.append(wrap, label);
       list.append(item);
     });
     section.append(list);

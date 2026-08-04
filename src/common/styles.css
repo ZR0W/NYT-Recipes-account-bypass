@@ -153,16 +153,46 @@
   color: #3c4043 !important;
 }
 
-.rs-ingredients,
+.rs-ingredients {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .rs-steps {
   margin: 0 0 0 18px !important;
   padding: 0 !important;
 }
 
-.rs-ingredients li,
 .rs-steps li {
   margin-bottom: 5px !important;
   color: #202124 !important;
+}
+
+.rs-ingredient {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  margin-bottom: 6px !important;
+}
+
+.rs-ingredient-check {
+  flex: 0 0 auto !important;
+  width: 15px !important;
+  height: 15px !important;
+  margin: 2px 0 0 !important;
+  cursor: pointer !important;
+}
+
+.rs-ingredient-label {
+  flex: 1 1 auto !important;
+  color: #202124 !important;
+  cursor: pointer !important;
+}
+
+.rs-ingredient.rs-checked .rs-ingredient-label {
+  color: #80868b !important;
+  text-decoration: line-through !important;
 }
 
 /* Print: show only the card, in normal document flow, everything else hidden. */

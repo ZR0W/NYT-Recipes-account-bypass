@@ -59,25 +59,53 @@
     return meta;
   }
 
+  // Ingredients render as a checklist (checkbox + label per item) so the
+  // card is usable hands-on while actually cooking. Checked state is UI-only
+  // (not persisted) — ticking things off while cooking is a one-session
+  // activity, unlike the card's own collapsed/expanded state.
   function buildIngredients(recipe) {
     const section = el("div", "rs-section");
     section.append(el("h3", null, "Ingredients"));
     const list = el("ul", "rs-ingredients");
-    for (const ingredient of recipe.ingredients) {
-      list.append(el("li", null, ingredient));
-    }
+    recipe.ingredients.forEach((ingredient, i) => {
+      const item = el("li", "rs-ingredient");
+      const checkboxId = `rs-ingredient-${i}`;
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "rs-ingredient-check";
+      checkbox.id = checkboxId;
+      checkbox.addEventListener("change", () => {
+        item.classList.toggle("rs-checked", checkbox.checked);
+      });
+
+      const label = document.createElement("label");
+      label.className = "rs-ingredient-label";
+      label.setAttribute("for", checkboxId);
+      label.textContent = ingredient;
+
+      item.append(checkbox, label);
+      list.append(item);
+    });
     section.append(list);
     return section;
   }
 
+  // Step numbers must stay continuous across HowToSection groups (e.g. a
+  // sub-recipe's "For the stock" / "For the soup" split) rather than each
+  // section's <ol> restarting at 1 — the `start` attribute carries the
+  // running count forward instead of relying on per-list default numbering.
   function buildSteps(recipe) {
     const section = el("div", "rs-section");
     section.append(el("h3", null, "Steps"));
+    let stepNumber = 1;
     for (const group of recipe.steps) {
       if (group.section) section.append(el("h4", "rs-step-section", group.section));
       const list = el("ol", "rs-steps");
+      list.start = stepNumber;
       for (const step of group.items) {
         list.append(el("li", null, step));
+        stepNumber += 1;
       }
       section.append(list);
     }
@@ -101,9 +129,13 @@
     lines.push("");
 
     lines.push("## Steps");
+    let stepNumber = 1;
     for (const group of recipe.steps) {
       if (group.section) lines.push(`### ${group.section}`);
-      group.items.forEach((step, i) => lines.push(`${i + 1}. ${step}`));
+      for (const step of group.items) {
+        lines.push(`${stepNumber}. ${step}`);
+        stepNumber += 1;
+      }
     }
 
     return lines.join("\n");

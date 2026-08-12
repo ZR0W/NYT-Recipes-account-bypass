@@ -80,9 +80,28 @@
   // below but UNVERIFIED against a real NYT Cooking recipe. Spot-check this
   // branch against a real sub-recipe (e.g. one with a stock/base component) if
   // one turns up.
+  // Some sites (e.g. babi.sh) append a raw markdown-style bullet list of
+  // matched ingredients onto the end of each step's text — presumably
+  // leftover from their own ingredient-highlighting feature. Real recipe
+  // instructions don't end in bare "- " bullet lines, so trimming trailing
+  // blank/bullet lines is a safe generic cleanup rather than a site-specific
+  // hack.
+  function stripTrailingBulletNoise(text) {
+    const lines = text.split("\n");
+    while (
+      lines.length &&
+      (lines[lines.length - 1].trim() === "" || /^[-*•]\s/.test(lines[lines.length - 1].trim()))
+    ) {
+      lines.pop();
+    }
+    return lines.join("\n").trim();
+  }
+
   function stepTextOf(step) {
-    if (typeof step === "string") return step.trim();
-    if (step && typeof step === "object") return (step.text || step.name || "").toString().trim();
+    if (typeof step === "string") return stripTrailingBulletNoise(step);
+    if (step && typeof step === "object") {
+      return stripTrailingBulletNoise((step.text || step.name || "").toString());
+    }
     return "";
   }
 
@@ -123,12 +142,21 @@
   function normalizeRecipe(raw) {
     const author = Array.isArray(raw.author) ? raw.author[0] : raw.author;
     const rating = raw.aggregateRating || null;
+    // A recipe with zero reviews yet is commonly represented as
+    // {ratingValue: 0, ratingCount: 0} rather than omitting the field
+    // entirely (seen on babi.sh) — treat that as "no rating" rather than
+    // literally "rated zero stars by zero people".
+    const hasRating =
+      rating &&
+      typeof rating.ratingValue === "number" &&
+      typeof rating.ratingCount === "number" &&
+      rating.ratingCount > 0;
 
     return {
       title: (raw.name || "").toString().trim() || "Recipe",
       description: (raw.description || "").toString().trim() || null,
-      ratingValue: rating && typeof rating.ratingValue === "number" ? rating.ratingValue : null,
-      ratingCount: rating && typeof rating.ratingCount === "number" ? rating.ratingCount : null,
+      ratingValue: hasRating ? rating.ratingValue : null,
+      ratingCount: hasRating ? rating.ratingCount : null,
       authorName: author && author.name ? author.name.toString().trim() : null,
       yieldText: joinField(raw.recipeYield),
       timeText: normalizeTime(raw),

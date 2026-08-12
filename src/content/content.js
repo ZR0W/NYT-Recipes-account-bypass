@@ -1,6 +1,9 @@
-// Entry point. Runs on every https://cooking.nytimes.com/recipes/* page
-// (declarative match in manifest.json — nothing runs anywhere else, no
-// host_permissions needed for that declarative injection).
+// Entry point. Runs on every page matched by manifest.json's content_scripts
+// (an explicit per-site allowlist — currently NYT Cooking and babi.sh —
+// nothing runs anywhere else, no host_permissions needed for that
+// declarative injection). The parsing/rendering logic itself is
+// schema.org-generic, not tied to any one site; adding a new site is a
+// manifest.json matches entry, not a code change.
 //
 // Reads only the schema.org Recipe JSON-LD already present in this page's
 // own HTML response. No network requests, no authentication, nothing sent

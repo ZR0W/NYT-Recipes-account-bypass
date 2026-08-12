@@ -10,10 +10,16 @@
     if (typeof value !== "string") return null;
     const match = ISO_DURATION_RE.exec(value.trim());
     if (!match) return null;
-    const [, days, hours, minutes] = match;
+    const [, days, hours, minutes, seconds] = match;
+    // Some sites (e.g. babi.sh) express durations purely in seconds
+    // ("PT7200S") rather than NYT's "PT1H20M" style — round to the nearest
+    // minute rather than dropping the seconds group entirely.
     const totalMinutes =
-      (Number(days) || 0) * 24 * 60 + (Number(hours) || 0) * 60 + (Number(minutes) || 0);
-    return totalMinutes > 0 ? totalMinutes : totalMinutes === 0 ? 0 : null;
+      (Number(days) || 0) * 24 * 60 +
+      (Number(hours) || 0) * 60 +
+      (Number(minutes) || 0) +
+      Math.round((Number(seconds) || 0) / 60);
+    return totalMinutes;
   }
 
   function formatMinutes(totalMinutes) {

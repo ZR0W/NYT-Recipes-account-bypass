@@ -18,7 +18,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://cooking.nytimes.com/recipes/*"],
+      "matches": ["https://cooking.nytimes.com/recipes/*", "https://www.babi.sh/recipes/*"],
       "js": [
         "src/common/duration.js",
         "src/common/parser.js",
